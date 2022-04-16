@@ -11,6 +11,9 @@ const app=express();
 // CONFIGURAR CORS
 app.use(cors());
 
+// LECTURA Y PARSEO DE BODY
+app.use(express.json());
+
 // CONEXION A BD
 dbConnection();
 
@@ -18,12 +21,9 @@ dbConnection();
 
 
 // RUTAS
-app.get('/', (req,res)=>{
-    res.json({
-        ok:true,
-        msg:'Hola Mundo'
-    })
-});
+app.use('/api/usuarios', require('./routes/usuarios.routes'));
+app.use('/api/login', require('./routes/auth.routes'));
+
 
 app.listen(process.env.PORT, ()=>{
     console.log('Servidor corriendo en puerto', process.env.PORT);
