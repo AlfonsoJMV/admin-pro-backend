@@ -17,6 +17,9 @@ app.use(express.json());
 // CONEXION A BD
 dbConnection();
 
+// DIRECTORIO PUBLICO
+app.use(express.static('public'));
+
 // console.log(process.env);
 
 
