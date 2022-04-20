@@ -40,10 +40,25 @@ const crearHospital=async(req=request, res=response)=>{
 };
 
 const actualizarHospital=async(req=request, res=response)=>{
+    const uuidHospital=req.params.id;
+    const uuidUsuario=req.uuid;
     try{
+        const hospitalDB=await Hospital.findById(uuidHospital);
+        if(!hospitalDB){
+            return res.status(404).json({
+                ok:false,
+                msg:`No existe un hospital registrado con el id ${uuidHospital}`
+            });
+        }
+        const data={
+            usuario:uuidUsuario,
+            ...req.body
+        }
+        const hospitalActualizado=await Hospital.findByIdAndUpdate(uuidHospital, data, {new:true})
         res.json({
             ok:true,
-            msg:'Actualizar Hospital'
+            msg:'Actualizar Hospital',
+            hospitalActualizado
         });
     }catch(error){
         console.log(error);
@@ -55,10 +70,19 @@ const actualizarHospital=async(req=request, res=response)=>{
 };
 
 const borrarHospital=async(req=request, res=response)=>{
+    const uuid=req.params.id;
     try{
+        const hospitalDB=await Hospital.findById(uuid);
+        if(!hospitalDB){
+            return res.status(404).json({
+                ok:false,
+                msg:`No existe un hospital registrado con el id ${uuid}`
+            });
+        }
+        await Hospital.findByIdAndDelete(uuid);
         res.json({
             ok:true,
-            msg:'Borrar Hospital'
+            msg:'Hospital borrado exitosamente'
         });
     }catch(error){
         console.log(error);

@@ -51,10 +51,33 @@ const crearMedico=async(req=request, res=response)=>{
 };
 
 const actualizarMedico=async(req=request, res=response)=>{
+    const uuidMedico=req.params.id;
+    const uuidUsuario=req.uuid;
+    const uuidHospital=req.body.hospital;
     try{
+        const existeMedico=await Medico.findById(uuidMedico);
+        if(!existeMedico){
+            return res.status(400).json({
+                ok:false,
+                msg:`No existe un médico con id ${uuidMedico}`
+            });
+        }
+        const existeHospital=await Hospital.findById(uuidHospital);
+        if(!existeHospital){
+            return res.status(400).json({
+                ok:false,
+                msg:`No existe un hospital con id ${uuidHospital}`
+            });
+        }
+        const data={
+            usuario:uuidUsuario,
+            ...req.body
+        }
+        const medico=await Medico.findByIdAndUpdate(uuidMedico, data, {new:true});
         res.json({
             ok:true,
-            msg:'Actualizar Medico'
+            msg:'Médico Actualizado',
+            medico
         });
     }catch(error){
         console.log(error);
@@ -66,10 +89,19 @@ const actualizarMedico=async(req=request, res=response)=>{
 };
 
 const borrarMedico=async(req=request, res=response)=>{
+    const uuidMedico=req.params.id;
     try{
+        const existeMedico=await Medico.findById(uuidMedico);
+        if(!existeMedico){
+            return res.status(400).json({
+                ok:false,
+                msg:`No existe un médico con id ${uuidMedico}`
+            });
+        }
+        await Medico.findByIdAndDelete(uuidMedico);
         res.json({
             ok:true,
-            msg:'Borrar Medico'
+            msg:'Médico eliminado exitosamente'
         });
     }catch(error){
         console.log(error);
